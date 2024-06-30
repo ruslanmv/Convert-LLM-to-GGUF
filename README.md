@@ -2,7 +2,7 @@
 # Converting a Hugging Face LLM Model to GGUF Format Using Google Colab
 
 Hello everyone today we are going to conver a LLM model from Hugging Face to GGUF Format by using Google Colab.
-![](assets/2024-06-30-21-20-20.png)
+
 ## Introduction
 
 GGUF (General Graph Universal Format) is an efficient format optimized for deploying large language models (LLMs) on GPUs. This tutorial will guide you through converting the "ruslanmv/Medical-Llama3-v2" model from Hugging Face to GGUF format using Google Colab.
