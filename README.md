@@ -2,7 +2,7 @@
 # Converting a Hugging Face LLM Model to GGUF Format Using Google Colab
 
 Hello everyone today we are going to conver a LLM model from Hugging Face to GGUF Format by using Google Colab.
-
+![](assets/2024-06-30-21-20-20.png)
 ## Introduction
 
 GGUF (General Graph Universal Format) is an efficient format optimized for deploying large language models (LLMs) on GPUs. This tutorial will guide you through converting the "ruslanmv/Medical-Llama3-v2" model from Hugging Face to GGUF format using Google Colab.
@@ -202,16 +202,21 @@ def split_upload_model(model_path, repo_id,HF_TOKEN, split_max_tensors=256, spli
 This function is optional but powerful. It generates an "importance matrix" for your model, which can improve the quantization results. It essentially figures out which parts of the model are most critical for performance.
 
 ```python
+
+To display the given Python code as Markdown for a blog on GitHub, you can use the following Markdown syntax with proper indentation and formatting:
+
+```python
 from huggingface_hub import HfApi, login, CommitOperationAdd
 import io
+import tempfile
 
 def update_model_card(model_id, username, model_name, q_method, hf_token, new_repo_id, quantized_gguf_name):
     """
     Creates or updates the model card (README.md) for the GGUF-converted model on the Hugging Face Hub.
     """
-
+    
     # Log in to Hugging Face
-    login(token=hf_token, add_to_git_credential=True)
+    # login(token=hf_token, add_to_git_credential=True)
     api = HfApi()
 
     # Model card content (Markdown format) with YAML metadata
@@ -228,7 +233,7 @@ license: apache-2.0
 # {new_repo_id}
 
 This model was converted to GGUF format from [`{model_id}`](https://huggingface.co/{model_id}) using llama.cpp via
-[Convert Model to GGUF](https://huggingface.co/spaces/ruslanmv/convert_to_gguf).
+[Convert Model to GGUF](https://github.com/ruslanmv/convert-model-to-GGUF).
 
 **Key Features:**
 
@@ -242,23 +247,23 @@ Refer to the [original model card](https://huggingface.co/{model_id}) for more d
 
 **1. Install llama.cpp:**
 
-```bash
+
 brew install llama.cpp  # For macOS/Linux
-```
+
 
 **2. Run Inference:**
 
 **CLI:**
 
-```bash
+
 llama-cli --hf-repo {new_repo_id} --hf-file {quantized_gguf_name} -p "Your prompt here"
-```
+
 
 **Server:**
 
-```bash
+
 llama-server --hf-repo {new_repo_id} --hf-file {quantized_gguf_name} -c 2048
-```
+
 
 For more advanced usage, refer to the [llama.cpp repository](https://github.com/ggerganov/llama.cpp).
 """
@@ -266,10 +271,16 @@ For more advanced usage, refer to the [llama.cpp repository](https://github.com/
     # Convert card_text to BytesIO object
     card_text_bytes = io.BytesIO(card_text.encode())
 
+    # Write card_text to a temporary file
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".md") as temp_file:
+        temp_file.write(card_text)
+        temp_path = temp_file.name
+
     # Create or update the README.md file
     operations = [
-        CommitOperationAdd(path_in_repo="README.md", path_or_fileobj=card_text_bytes)
+        CommitOperationAdd(path_in_repo="README.md", path_or_fileobj=temp_path)
     ]
+
     api.create_commit(
         repo_id=new_repo_id,
         operations=operations,
@@ -277,12 +288,11 @@ For more advanced usage, refer to the [llama.cpp repository](https://github.com/
     )
 
     print("Model card (README.md) updated/created successfully!")
-
-
-
 ```
 
-These functions help manage your model.  `split_upload_model` splits a large model into smaller chunks for easier uploading, and `update_model_card` creates a helpful description of your model on the Hugging Face Hub.
+
+
+
 
 ```python
 def process_model(model_id, q_method, use_imatrix, private_repo, train_data_file, split_model, split_max_tensors, split_max_size, hf_token):
@@ -542,7 +552,7 @@ if __name__ == "__main__":
 
 This function builds a user interface using the `gradio` library, allowing you to select your model, quantization method, and other options conveniently.
 
-
+![](assets/2024-06-30-21-20-20.png)
 
 Finally, this launches the Gradio interface you built, allowing you to interact with the quantization process.
 
@@ -561,20 +571,15 @@ This downloads the quantized model, in our example `Medical-Llama3-v2.gguf`, to 
 * **Hugging Face Hub:**  This is a convenient platform to store and share your models.
 
 
-
-
-
-
 ## Conclusion
 
 Congratulations! You've successfully converted the "ruslanmv/Medical-Llama3-v2" model from Hugging Face to the GGUF format using Google Colab. The GGUF version of your model is now ready for efficient deployment and inference using the `llama.cpp` library. Experiment with quantization settings to further optimize the model's size and performance.
 
 ## Full Python Code for Google Colab
 
-Below is the complete Python code that should be inserted into your Google Colab notebook:
+Yo can see complete Python at the following [Google Colab notebook](https://colab.research.google.com/github/ruslanmv/convert-model-to-gguf/blob/master/LLM_to_GGUF.ipynb)
 
-```python
+[![](assets/2024-06-30-21-28-22.png)](https://colab.research.google.com/github/ruslanmv/convert-model-to-gguf/blob/master/LLM_to_GGUF.ipynb)
 
-```
 
-By following these steps, you should be able to convert and download the GGUF format of the "ruslanmv/Medical-Llama3-v2" model efficiently.
+**Congratulations!** Yyou should be able to convert and download the GGUF format of the "ruslanmv/Medical-Llama3-v2" model efficiently.
